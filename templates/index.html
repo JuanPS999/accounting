@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contabilidade Pessoal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Contabilidade Pessoal</h1>
+            <p class="subtitle">Gerencie suas finanças de forma simples e eficiente</p>
+        </header>
+
+        <!-- Financial Summary -->
+        <section class="summary-section">
+            <div class="summary-card">
+                <h3>Total Gastos</h3>
+                <p class="value positive" id="totalGastos">R$ 0,00</p>
+            </div>
+            <div class="summary-card">
+                <h3>Total Despesas</h3>
+                <p class="value negative" id="totalDespesas">R$ 0,00</p>
+            </div>
+            <div class="summary-card">
+                <h3>Saldo</h3>
+                <p class="value" id="saldo">R$ 0,00</p>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="filters-section">
+            <div class="filter-group">
+                <label for="filterDataInicio">Data Início:</label>
+                <input type="date" id="filterDataInicio">
+            </div>
+            <div class="filter-group">
+                <label for="filterDataFim">Data Fim:</label>
+                <input type="date" id="filterDataFim">
+            </div>
+            <div class="filter-group">
+                <label for="filterCategoria">Categoria:</label>
+                <select id="filterCategoria">
+                    <option value="">Todas</option>
+                    {% for categoria in categorias %}
+                    <option value="{{ categoria }}">{{ categoria }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button onclick="aplicarFiltros()" class="btn btn-primary">Aplicar Filtros</button>
+            <button onclick="limparFiltros()" class="btn btn-secondary">Limpar</button>
+        </section>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('gastos')">Gastos</button>
+            <button class="tab-button" onclick="openTab('despesas')">Despesas</button>
+            <button class="tab-button" onclick="openTab('relatorios')">Relatórios</button>
+        </div>
+
+        <!-- Gastos Tab -->
+        <div id="gastosTab" class="tab-content active">
+            <div class="section-header">
+                <h2>Registro de Gastos</h2>
+                <button onclick="showGastoForm()" class="btn btn-success">+ Novo Gasto</button>
+            </div>
+
+            <div id="gastoFormContainer" class="form-container" style="display: none;">
+                <h3 id="gastoFormTitle">Adicionar Gasto</h3>
+                <form id="gastoForm" onsubmit="submitGasto(event)">
+                    <input type="hidden" id="gastoId">
+                    <div class="form-group">
+                        <label for="gastoData">Data:</label>
+                        <input type="date" id="gastoData" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gastoCategoria">Categoria:</label>
+                        <select id="gastoCategoria" required>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria }}">{{ categoria }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gastoDescricao">Descrição:</label>
+                        <input type="text" id="gastoDescricao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gastoValor">Valor (R$):</label>
+                        <input type="number" id="gastoValor" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" onclick="hideGastoForm()" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="gastosTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gastosTableBody">
+                        <tr>
+                            <td colspan="5" class="no-data">Nenhum gasto registrado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Despesas Tab -->
+        <div id="despesasTab" class="tab-content">
+            <div class="section-header">
+                <h2>Registro de Despesas</h2>
+                <button onclick="showDespesaForm()" class="btn btn-success">+ Nova Despesa</button>
+            </div>
+
+            <div id="despesaFormContainer" class="form-container" style="display: none;">
+                <h3 id="despesaFormTitle">Adicionar Despesa</h3>
+                <form id="despesaForm" onsubmit="submitDespesa(event)">
+                    <input type="hidden" id="despesaId">
+                    <div class="form-group">
+                        <label for="despesaData">Data:</label>
+                        <input type="date" id="despesaData" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="despesaCategoria">Categoria:</label>
+                        <select id="despesaCategoria" required>
+                            {% for categoria in categorias %}
+                            <option value="{{ categoria }}">{{ categoria }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="despesaDescricao">Descrição:</label>
+                        <input type="text" id="despesaDescricao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="despesaValor">Valor (R$):</label>
+                        <input type="number" id="despesaValor" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" onclick="hideDespesaForm()" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table id="despesasTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="despesasTableBody">
+                        <tr>
+                            <td colspan="5" class="no-data">Nenhuma despesa registrada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Relatórios Tab -->
+        <div id="relatoriosTab" class="tab-content">
+            <h2>Relatórios e Gráficos</h2>
+            
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h3>Gastos por Categoria</h3>
+                    <canvas id="gastosChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>Despesas por Categoria</h3>
+                    <canvas id="despesasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
