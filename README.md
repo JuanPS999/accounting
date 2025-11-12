@@ -199,4 +199,4 @@ Para reportar bugs ou sugerir melhorias, abra uma issue no repositório do GitHu
   <sub><i>Per Aspera Ad Astra.</i></sub>
 </p>
 
-**Nota**: Este é um projeto educacional para gerenciamento de finanças pessoais. Para uso em produção, considere adicionar autenticação, criptografia e outras medidas de segurança adicionais.
+---jeto educacional para gerenciamento de finanças pessoais. Para uso em produção, considere adicionar autenticação, criptografia e outras medidas de segurança adicionais.
