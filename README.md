@@ -1,8 +1,8 @@
-# 💰 Contabilidade Pessoal
+# Contabilidade Pessoal
 
 Sistema completo de contabilidade pessoal desenvolvido em Python com Flask, permitindo gerenciar gastos e despesas de forma simples e eficiente.
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
 ### Registro de Transações
 - **Gastos**: Adicionar, visualizar, editar e excluir gastos
@@ -22,7 +22,7 @@ Sistema completo de contabilidade pessoal desenvolvido em Python com Flask, perm
 - Filtrar por categoria
 - Aplicar múltiplos filtros simultaneamente
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 - **Backend**: Python 3.x com Flask
 - **Banco de Dados**: SQLite (simples e portátil)
@@ -30,12 +30,12 @@ Sistema completo de contabilidade pessoal desenvolvido em Python com Flask, perm
 - **Gráficos**: Chart.js
 - **ORM**: SQLAlchemy
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Python 3.7 ou superior
 - pip (gerenciador de pacotes Python)
 
-## 🔧 Instalação
+## Instalação
 
 1. Clone o repositório:
 ```bash
@@ -59,7 +59,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## ▶️ Como Executar
+## Como Executar
 
 1. Execute a aplicação:
 ```bash
@@ -78,7 +78,7 @@ python app.py
 http://localhost:5000
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 accounting/
@@ -96,7 +96,7 @@ accounting/
     └── index.html         # Template HTML principal
 ```
 
-## 🎨 Categorias Disponíveis
+## Categorias Disponíveis
 
 - Alimentação
 - Transporte
@@ -106,7 +106,7 @@ accounting/
 - Entretenimento
 - Outros
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Gastos
 - `GET /api/gastos` - Listar todos os gastos (com filtros opcionais)
@@ -128,7 +128,7 @@ accounting/
 ### Utilitários
 - `GET /api/categorias` - Listar categorias disponíveis
 
-## 📊 Recursos da Interface
+## Recursos da Interface
 
 ### Design Responsivo
 - Interface adaptável para dispositivos móveis e desktop
@@ -148,7 +148,7 @@ accounting/
 - Organização por abas (Gastos, Despesas, Relatórios)
 - Gráficos interativos com tooltips
 
-## 🗄️ Banco de Dados
+## Banco de Dados
 
 O sistema utiliza SQLite com as seguintes tabelas:
 
@@ -168,7 +168,7 @@ O sistema utiliza SQLite com as seguintes tabelas:
 - `valor` (FLOAT, NOT NULL)
 - `created_at` (DATETIME)
 
-## 🔒 Segurança
+## Segurança
 
 - Validação de entrada de dados no frontend e backend
 - Proteção contra valores negativos
@@ -177,22 +177,26 @@ O sistema utiliza SQLite com as seguintes tabelas:
 - Erro logging sem exposição de stack traces ao cliente
 - Debug mode desabilitado por padrão (use FLASK_DEBUG=true para habilitar em desenvolvimento)
 
-## 🤝 Contribuindo
+## Contribuindo
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
-## 📝 Licença
+## Licença
 
 Este projeto é de código aberto e está disponível sob a licença MIT.
 
-## 👨‍💻 Autor
+## Autor
 
 Desenvolvido por JuanPS999
 
-## 📧 Suporte
+## Suporte
 
 Para reportar bugs ou sugerir melhorias, abra uma issue no repositório do GitHub.
 
 ---
+
+<p align="center">
+  <sub><i>Per Aspera Ad Astra.</i></sub>
+</p>
 
 **Nota**: Este é um projeto educacional para gerenciamento de finanças pessoais. Para uso em produção, considere adicionar autenticação, criptografia e outras medidas de segurança adicionais.
