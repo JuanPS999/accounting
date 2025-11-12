@@ -7,6 +7,7 @@ from models import db, Gasto, Despesa
 from datetime import datetime
 from sqlalchemy import extract, func
 import os
+import logging
 
 app = Flask(__name__)
 CORS(app)
@@ -15,6 +16,10 @@ CORS(app)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "accounting.db")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize database
 db.init_app(app)
@@ -64,7 +69,8 @@ def get_gastos():
         gastos = query.order_by(Gasto.data.desc()).all()
         return jsonify([gasto.to_dict() for gasto in gastos])
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        logger.error(f"Error getting gastos: {str(e)}")
+        return jsonify({'error': 'Failed to retrieve gastos'}), 400
 
 
 @app.route('/api/gastos', methods=['POST'])
@@ -91,9 +97,13 @@ def create_gasto():
         db.session.commit()
         
         return jsonify(gasto.to_dict()), 201
+    except ValueError as e:
+        logger.error(f"Validation error creating gasto: {str(e)}")
+        return jsonify({'error': 'Invalid data provided'}), 400
     except Exception as e:
+        logger.error(f"Error creating gasto: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to create gasto'}), 400
 
 
 @app.route('/api/gastos/<int:id>', methods=['PUT'])
@@ -116,9 +126,13 @@ def update_gasto(id):
         
         db.session.commit()
         return jsonify(gasto.to_dict())
+    except ValueError as e:
+        logger.error(f"Validation error updating gasto {id}: {str(e)}")
+        return jsonify({'error': 'Invalid data provided'}), 400
     except Exception as e:
+        logger.error(f"Error updating gasto {id}: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to update gasto'}), 400
 
 
 @app.route('/api/gastos/<int:id>', methods=['DELETE'])
@@ -130,8 +144,9 @@ def delete_gasto(id):
         db.session.commit()
         return jsonify({'message': 'Gasto deleted successfully'})
     except Exception as e:
+        logger.error(f"Error deleting gasto {id}: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to delete gasto'}), 400
 
 
 # ==================== DESPESAS ENDPOINTS ====================
@@ -157,7 +172,8 @@ def get_despesas():
         despesas = query.order_by(Despesa.data.desc()).all()
         return jsonify([despesa.to_dict() for despesa in despesas])
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        logger.error(f"Error getting despesas: {str(e)}")
+        return jsonify({'error': 'Failed to retrieve despesas'}), 400
 
 
 @app.route('/api/despesas', methods=['POST'])
@@ -184,9 +200,13 @@ def create_despesa():
         db.session.commit()
         
         return jsonify(despesa.to_dict()), 201
+    except ValueError as e:
+        logger.error(f"Validation error creating despesa: {str(e)}")
+        return jsonify({'error': 'Invalid data provided'}), 400
     except Exception as e:
+        logger.error(f"Error creating despesa: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to create despesa'}), 400
 
 
 @app.route('/api/despesas/<int:id>', methods=['PUT'])
@@ -209,9 +229,13 @@ def update_despesa(id):
         
         db.session.commit()
         return jsonify(despesa.to_dict())
+    except ValueError as e:
+        logger.error(f"Validation error updating despesa {id}: {str(e)}")
+        return jsonify({'error': 'Invalid data provided'}), 400
     except Exception as e:
+        logger.error(f"Error updating despesa {id}: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to update despesa'}), 400
 
 
 @app.route('/api/despesas/<int:id>', methods=['DELETE'])
@@ -223,8 +247,9 @@ def delete_despesa(id):
         db.session.commit()
         return jsonify({'message': 'Despesa deleted successfully'})
     except Exception as e:
+        logger.error(f"Error deleting despesa {id}: {str(e)}")
         db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Failed to delete despesa'}), 400
 
 
 # ==================== REPORTS ENDPOINTS ====================
@@ -260,7 +285,8 @@ def get_resumo():
             'saldo': float(saldo)
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        logger.error(f"Error getting resumo: {str(e)}")
+        return jsonify({'error': 'Failed to generate summary'}), 400
 
 
 @app.route('/api/relatorios/gastos-por-categoria', methods=['GET'])
@@ -287,7 +313,8 @@ def get_gastos_por_categoria():
             'total': float(total)
         } for categoria, total in results])
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        logger.error(f"Error getting gastos by category: {str(e)}")
+        return jsonify({'error': 'Failed to generate report'}), 400
 
 
 @app.route('/api/relatorios/despesas-por-categoria', methods=['GET'])
@@ -314,7 +341,8 @@ def get_despesas_por_categoria():
             'total': float(total)
         } for categoria, total in results])
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        logger.error(f"Error getting despesas by category: {str(e)}")
+        return jsonify({'error': 'Failed to generate report'}), 400
 
 
 @app.route('/api/categorias', methods=['GET'])
@@ -324,4 +352,6 @@ def get_categorias():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    import os
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(debug=debug_mode, host='0.0.0.0', port=5000)

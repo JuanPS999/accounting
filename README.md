@@ -66,7 +66,14 @@ pip install -r requirements.txt
 python app.py
 ```
 
-2. Abra seu navegador e acesse:
+2. Para habilitar o modo de debug (apenas para desenvolvimento):
+```bash
+export FLASK_DEBUG=true  # Linux/Mac
+set FLASK_DEBUG=true     # Windows
+python app.py
+```
+
+3. Abra seu navegador e acesse:
 ```
 http://localhost:5000
 ```
@@ -167,6 +174,8 @@ O sistema utiliza SQLite com as seguintes tabelas:
 - Proteção contra valores negativos
 - Sanitização de dados antes de armazenar no banco
 - CORS habilitado para desenvolvimento
+- Erro logging sem exposição de stack traces ao cliente
+- Debug mode desabilitado por padrão (use FLASK_DEBUG=true para habilitar em desenvolvimento)
 
 ## 🤝 Contribuindo
 
